@@ -2,6 +2,6 @@
 
 > 使用silent搭建静态博客，全站使用markdown编写
 
-- 博客首页：[林志鑫的个人博客](http://amen2015.coding.me/)
+- 博客首页：[林志鑫的个人博客](https://amenrun.github.io/)
 - markdown语法可以到我的个人博客学习
 - 搭建silent静态博客请参考: [silent](https://github.com/fritx/silent)
