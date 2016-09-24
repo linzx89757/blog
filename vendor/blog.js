@@ -1,27 +1,13 @@
-/*
-author:amen2020
-date:2016.03.25
-note:refence form (https://github.com/fritx/silent)
+/**
+ * refence form (https://github.com/fritx/silent) in 2016.03.25
+ * fix by amen2020 in September 25, 2016
 */
 
 (function () {
-/*
-var mainPage=?
-（如http://www.baidu.com/web?id=5）
-1.location.search
-返回?id=5
-2.location.search.slice(1)
-返回id=5
-*/
-//3.location.search.slice(1).replace(/&.*/, '')
-//返回经过除去&.*的字符串
-//
-  var pageBase = 'blog/p/';
+  var pageBase = 'p/';
   var pageExt = 'md';
-  var mainPage = location.search.slice(1)
-    .replace(/&.*/, '') || 'aboutme';
+  var mainPage = location.search.slice(1).replace(/&.*/, '') || 'aboutme';
   var mainTitle = '';
-
 
   function config() {
     marked.setOptions({
@@ -39,9 +25,7 @@ var mainPage=?
   function render(data, options, callback) {
     marked(data, options, callback);
   }
-/*
-1.url->blog/p/[page].md
-*/
+
   function load(sel, page, isMain, options, callback) {
     isMain = isMain || false;
     var url = pageBase + page + '.' + pageExt;
@@ -114,12 +98,7 @@ var mainPage=?
     return !url.indexOf('//') || !!~url.indexOf('://');
   }
 
-
   config();
   start();
-/*
-程序执行过程：
-加载首页index.html时执行start()，加载sidebar.md和projects/index.md
-->load()
-*/
+
 })();
