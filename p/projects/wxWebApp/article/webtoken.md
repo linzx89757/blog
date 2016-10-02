@@ -139,3 +139,83 @@
     ```
 
 2. 在服务器端执行获取openid或者用户基本信息的php脚本
+   - 封装一个处理微信网页授权机制的类，命名为WebToken
+   - 提供两个公共方法，getOpenid()，getUserInfo()
+
+    ```php
+    <?php
+    require_once "DataManipulation.php";
+    
+    class WebToken extends DataManipulation {
+        private $appId;
+        private $appSecret;
+        private $code;
+    
+        public function __construct($appId, $appSecret, $code) {
+            $this->appId = $appId;
+            $this->appSecret = $appSecret;
+            $this->code = $code;
+        }
+    
+        public function getOpenid() {
+            
+            $data = $this->getWebToken();
+    
+            return $data->openid;
+        }
+    
+        public function getUserInfo() {
+    
+            $data = $this->getWebToken();
+    
+            $url = "https://api.weixin.qq.com/sns/userinfo?".
+                   "access_token=$data->access_token&openid=$data->openid".
+                   "&lang=zh_CN";
+    
+            $res = $this->httpGet($url);
+    
+            return $res;
+        }
+    
+        private function getWebToken() {
+    
+            $url = "https://api.weixin.qq.com/sns/oauth2/access_token?".
+                   "appid=$this->appId&secret=$this->appSecret&code=$this->code".
+                   "&grant_type=authorization_code";
+    
+            $res = $this->httpGet($url);
+    
+            return json_decode($res);
+        }
+    }
+    
+    ?>
+    ```
+
+   - 一个处理前端授权的接口
+   - 当请求state为heyQScopeBase即静默授权时，返回openid
+   - 当请求state为heyQScopeUserinfo即授权登录时，以json数据格式返回用户基本信息
+   
+    ```php
+    <?php
+    require_once "class/WebToken.php";
+    
+    $code = isset($_GET["code"])?$_GET["code"]:null;
+    $state = isset($_GET["state"])?$_GET["state"]:null;
+    
+    $heyQStr = trim(substr(file_get_contents("cache/heyQ.php"), 15));
+    $heyQ = json_decode($heyQStr);
+    
+    $appId = $heyQ->appId;
+    $appSecret = $heyQ->appSecret;
+    
+    $webToken = new WebToken($appId, $appSecret, $code);
+    
+    if($state === "heyQScopeBase") {
+    	echo $webToken->getOpenid();
+    }else if($state === "heyQScopeUserinfo") {
+    	echo $webToken->getUserInfo();
+    }
+    
+    ?>
+    ```
