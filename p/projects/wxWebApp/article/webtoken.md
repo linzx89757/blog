@@ -35,47 +35,47 @@
 
 	(function(window) {
 		"use strict";
-
+	
 	    var appid, // 微信公众平台的应用ID
 	    	openid = store.get("openid"), // 使用store.js
 	    	code = getUrlParam("code"), // 用于判断用户是否开始授权
 	        state = getUrlParam("state"), // 用于区分静默授权还是授权登录状态
 	        pageURL = url(); // 回调页(拿到页面干净的url地址，不包括code等字段)
-
+	
 	    window.$userLogin = function(call) {
-            if(openid){
-                // alert("检测cookie有openid，开始执行业务"); // --->>>debug
-                call && call(openid);
-            }else{
-                if(!code) {
-                    // alert("检测cookie没有openid，开始授权，先进行静默授权"); // --->>>debug
-                    location.href = "https://open.weixin.qq.com/connect/oauth2/authorize?" +
-                        "appid=" + appid +
-                        "&redirect_uri=" + encodeURI(pageURL) +
-                        "&response_type=code&scope=snsapi_base&state=heyQScopeBase#wechat_redirect"; // 将state配置为heyQScopeBase标识为静默授权状态
-                }else{
-                    if(state === "heyQScopeBase") {
-                        // alert("通过静默授权，开始用户查重"); // --->>>debug
-                        checkDB(function() { // 用户不存在，进行授权登录
-                            location.href = "https://open.weixin.qq.com/connect/oauth2/authorize?" +
-                                "appid=" + appid +
-                                "&redirect_uri=" + encodeURI(pageURL) +
-                                "&response_type=code&scope=snsapi_userinfo&state=heyQScopeUserinfo#wechat_redirect"; // 将state配置为heyQScopeUserinfo标识为授权登录状态
-                        }, function(openid) { // 用户存在，缓存openid到cookie并开始执行业务
-                            store.set("heyQ" + appid, openid);
-                            location.href = pageURL;
-                        });
-                    }else if(state === "heyQScopeUserinfo") {
-                        // alert("首次登陆，需要保存您的微信个人资料"); // --->>>debug
-                        saveDB(function(openid) { // 个人资料保存成功，缓存openid到cookie并开始执行业务
-                            store.set("heyQ" + appid, openid);
-                            location.href = pageURL;
-                        });
-                    }
-                }
-            }
+	        if(openid){
+	            // alert("检测cookie有openid，开始执行业务"); // --->>>debug
+	            call && call(openid);
+	        }else{
+	            if(!code) {
+	                // alert("检测cookie没有openid，开始授权，先进行静默授权"); // --->>>debug
+	                location.href = "https://open.weixin.qq.com/connect/oauth2/authorize?" +
+	                    "appid=" + appid +
+	                    "&redirect_uri=" + encodeURI(pageURL) +
+	                    "&response_type=code&scope=snsapi_base&state=heyQScopeBase#wechat_redirect"; // 	将state配置为heyQScopeBase标识为静默授权状态
+	            }else{
+	                if(state === "heyQScopeBase") {
+	                    // alert("通过静默授权，开始用户查重"); // --->>>debug
+	                    checkDB(function() { // 用户不存在，进行授权登录
+	                        location.href = "https://open.weixin.qq.com/connect/oauth2/authorize?" +
+	                            "appid=" + appid +
+	                            "&redirect_uri=" + encodeURI(pageURL) +
+	                            "&response_type=code&scope=snsapi_userinfo&state=heyQScopeUserinfo#wechat_redirect"; // 	将state配置为heyQScopeUserinfo标识为授权登录状态
+	                    }, function(openid) { // 用户存在，缓存openid到cookie并开始执行业务
+	                        store.set("heyQ" + appid, openid);
+	                        location.href = pageURL;
+	                    });
+	                }else if(state === "heyQScopeUserinfo") {
+	                    // alert("首次登陆，需要保存您的微信个人资料"); // --->>>debug
+	                    saveDB(function(openid) { // 个人资料保存成功，缓存openid到cookie并开始执行业务
+	                        store.set("heyQ" + appid, openid);
+	                        location.href = pageURL;
+	                    });
+	                }
+	            }
+	        }
 	    };
-
+	
 	    // 静默授权，拿到openid，检查数据库是否存在该用户
 	    function checkDB(not_existCall, existCall) {
 	        $.get($WX_API.wxWebToken, {code: code, state: state}, function(openid) {
@@ -122,7 +122,7 @@
 	            });
 	        });
 	    }
-
+	
 		/**
 		 * 当前url指定查询字段的值，没有则返回null
 		 * @param name 查询字段名
