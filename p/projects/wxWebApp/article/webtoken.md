@@ -33,6 +33,7 @@
    - 引入cookie机制：将openid缓存到cookie进行标识用户登录状态，如果检测到cookie有openid，开始执行从页面的业务逻辑，如果检测到cookie不存在openid，开始授权流程
    - 授权流程：先静默授权拿openid，根据openid进行用户查重，如果用户存在说明cookie被清，则将openid重新缓存到cookie；如果用户不存在说明该用户首次访问，进行授权登录，拿用户的个人信息，保存到数据库，并且将openid重新缓存到cookie；由于授权后回调url会带上code字段，针对这种情况在openid缓存进cookie后跳转回页面干净的url
 
+    ```javascript
     (function(window) {
     	"use strict";
     
@@ -149,5 +150,6 @@
     	    return url;
     	}
     })(window);
+    ```
 
 2. 在服务器端执行获取openid或者用户基本信息的php脚本
