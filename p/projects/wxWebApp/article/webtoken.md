@@ -8,6 +8,7 @@
 1. openid可以唯一标识用户，每个用户针对每个公众号会产生一个安全的openid
 2. unionid可以在多个公众号、移动应用做用户共通
 
+
 > 第二步 了解授权机制
 
 1. 需要在公众平台配置授权回调域名
@@ -18,11 +19,13 @@
    - 通过code换取的access_token，和基础支持获取的access_token不一样，后者用于调用JSSDK接口与公众号开发
    - 授权登录获取用户基本信息，和用户管理类接口中的“获取用户基本信息接口”不一样，后者是用户必须关注了公众号才会调用成功拿到数据
 
+
 > 第三步 了解授权后如何通过code字段进行下一步业务
 
 1. 静默授权：通过code获取openid
 2. 授权登录：通过code获取openid和access_token，从而获取用户基本信息
 3. 以上业务需要在服务器端执行
+
 
 > 第四步 项目实战（附上代码）  
 > *后台需要做的配合：配合静默授权提供一个用户查重接口、配合授权登录提供一个新增用户接口*
@@ -137,8 +140,36 @@
     	}
     })(window);
     ```
+    
+2. 响应前端网页授权的接口
+   - 当请求state为heyQScopeBase即静默授权时，返回openid
+   - 当请求state为heyQScopeUserinfo即授权登录时，以json数据格式返回用户基本信息
+   
+    ```php
+    <?php
+    require_once "class/WebToken.php";
+    
+    $code = isset($_GET["code"])?$_GET["code"]:null;
+    $state = isset($_GET["state"])?$_GET["state"]:null;
+    
+    $heyQStr = trim(substr(file_get_contents("cache/heyQ.php"), 15));
+    $heyQ = json_decode($heyQStr);
+    
+    $appId = $heyQ->appId;
+    $appSecret = $heyQ->appSecret;
+    
+    $webToken = new WebToken($appId, $appSecret, $code);
+    
+    if($state === "heyQScopeBase") {
+        echo $webToken->getOpenid();
+    }else if($state === "heyQScopeUserinfo") {
+        echo $webToken->getUserInfo();
+    }
+    
+    ?>
+    ```
 
-2. 在服务器端执行获取openid或者用户基本信息的php脚本
+3. 在服务器端执行获取openid或者用户基本信息的php脚本
    - 封装一个处理微信网页授权机制的类，命名为WebToken
    - 提供两个公共方法，getOpenid()，getUserInfo()
 
@@ -187,34 +218,6 @@
     
             return json_decode($res);
         }
-    }
-    
-    ?>
-    ```
-
-   - 一个处理前端授权的接口
-   - 当请求state为heyQScopeBase即静默授权时，返回openid
-   - 当请求state为heyQScopeUserinfo即授权登录时，以json数据格式返回用户基本信息
-   
-    ```php
-    <?php
-    require_once "class/WebToken.php";
-    
-    $code = isset($_GET["code"])?$_GET["code"]:null;
-    $state = isset($_GET["state"])?$_GET["state"]:null;
-    
-    $heyQStr = trim(substr(file_get_contents("cache/heyQ.php"), 15));
-    $heyQ = json_decode($heyQStr);
-    
-    $appId = $heyQ->appId;
-    $appSecret = $heyQ->appSecret;
-    
-    $webToken = new WebToken($appId, $appSecret, $code);
-    
-    if($state === "heyQScopeBase") {
-    	echo $webToken->getOpenid();
-    }else if($state === "heyQScopeUserinfo") {
-    	echo $webToken->getUserInfo();
     }
     
     ?>

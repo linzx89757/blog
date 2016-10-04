@@ -6,24 +6,37 @@
 
 ## [JSSDK初始化与调用](article/jssdk.md)
 
-> 项目文件结构
+> 项目文件结构  
+> *服务器环境为php环境*
 
 	api-
-	  wxWebToken.php
-	  wxConfig.php
+	  wxWebToken.php // 响应前端网页授权的接口
+	  wxConfig.php // 响应前端调用JSSDK初始化的接口
 	  cache-
 	    heyQ.php
 	    api_access_token.php
 	    jsapi_ticket.php
 	  class-
 	    DataManipulation.php
-	    WebToken.php
-	    ApiAccess_token.php
-	    JSSDK_config.php
+	    WebToken.php // 处理网页授权的类
+	    ApiAccess_token.php // 获取全局接口调用唯一凭证access_token的类
+	    JSSDK_config.php // 处理config参数包的类
 	script-
 	  userLogin.js
 	  wxJSSDK.js
     
+    heyQ.php->服务器端保存公众平台的开发者应用ID和秘钥
+    <?php exit();?>
+    {"appId":"微信公众平台的应用ID","appSecret":"微信公众平台的应用秘钥"}
+    
+    api_access_token.php->服务器端缓存access_token
+    <?php exit();?>
+    {"access_token":"","expire_time":}
+    
+    jsapi_ticket.php->服务器端缓存jsapi_ticket
+    <?php exit();?>
+    {"jsapi_ticket":"","expire_time":}
+
     DataManipulation.php->封装一个数据操作的公共类，包括http get请求和服务器本地文本文件缓存数据的读写
     <?php
     class DataManipulation {
@@ -48,15 +61,3 @@
         }
     }
     ?>
-    
-    heyQ.php->服务器端保存公众平台的开发者应用ID和秘钥
-    <?php exit();?>
-    {"appId":"微信公众平台的应用ID","appSecret":"微信公众平台的应用秘钥"}
-    
-    api_access_token.php->服务器端缓存access_token
-    <?php exit();?>
-    {"access_token":"","expire_time":}
-    
-    jsapi_ticket.php->服务器端缓存jsapi_ticket
-    <?php exit();?>
-    {"jsapi_ticket":"","expire_time":}
