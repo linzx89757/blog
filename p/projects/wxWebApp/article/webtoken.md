@@ -15,16 +15,16 @@
 2. 两种授权类型：静默授权获取用户openid、授权登录获取用户基本信息（实质都是跳转到授权链接进行授权然后又跳转回配置的回调页面链接，此时回调页面链接会带上code字段，可以通过code字段的值进行下一步业务，获取openid或者用户基本信息）
 3. 静默授权机制：当跳转到静默授权链接进行授权后自动跳转回调页面，该行为用户无明显感知，只看到加载进度条发生了两次加载
 4. 授权登录机制：当跳转到授权登录链接时需要用户决定是否同意登录，该行为如果发生在用户从公众号的会话或者菜单进入授权，则行为和静默授权一样
-5. 注意事项：
-   - 通过code换取的access_token，和基础支持获取的access_token不一样，后者用于调用JSSDK接口与公众号开发
-   - 授权登录获取用户基本信息，和用户管理类接口中的“获取用户基本信息接口”不一样，后者是用户必须关注了公众号才会调用成功拿到数据
 
 
 ## 第三步 了解授权后如何通过code字段进行下一步业务
 
 1. 静默授权：通过code获取openid
 2. 授权登录：通过code获取openid和access_token，从而获取用户基本信息
-3. 以上业务需要在服务器端执行
+3. 注意事项：
+   - 以上业务需要在服务器端执行
+   - 通过code换取的access_token，和基础支持获取的access_token不一样，后者用于调用JSSDK接口与公众号开发
+   - 授权登录获取用户基本信息，和用户管理类接口中的“获取用户基本信息接口”不一样，后者是用户必须关注了公众号才会调用成功拿到数据
 
 
 ## 第四步 项目实战（附上代码）
@@ -33,17 +33,17 @@
 1. 在前端处理用户登录的公共脚本userLogin.js，以openid唯一标识用户
    - $userLogin(function(openid) {});
    - 使用说明：在页面中引入该脚本，传入回调函数统一处理openid，并且执行顺序优先于页面所有业务逻辑，也就是说传入的回调函数是页面业务逻辑的执行入口
-   - 引入cookie机制：将openid缓存到cookie进行标识用户登录状态，如果检测到cookie有openid，开始执行从页面的业务逻辑，如果检测到cookie不存在openid，开始授权流程
-   - 授权流程：先静默授权拿openid，根据openid进行用户查重，如果用户存在说明cookie被清，则将openid重新缓存到cookie；如果用户不存在说明该用户首次访问，进行授权登录，拿用户的个人信息，保存到数据库，并且将openid重新缓存到cookie；由于授权后回调url会带上code字段，针对这种情况在openid缓存进cookie后跳转回页面干净的url
+   - 引入cookie机制：将openid缓存到cookie进行标识用户登录状态，如果检测到cookie有openid，开始执行页面的业务逻辑，如果检测到cookie不存在openid，需要进行授权
+   - 授权流程：先静默授权拿openid，根据openid进行用户查重，如果用户存在说明cookie被清，则将openid重新缓存到cookie；如果用户不存在说明该用户首次访问，进行授权登录，拿用户的个人信息保存到数据库，并且将openid重新缓存到cookie；由于授权后回调url会带上code字段，针对这种情况在openid缓存进cookie后，跳转回页面干净的url
 
     ```javascript
     (function(window) {
     	"use strict";
     
-        var appid = "your appid", // 微信公众平台的应用ID，查看(公众平台-开发-基本配置-开发者ID)
+        var appid = "your appid", // 公众号的应用ID，查看(公众平台-开发-基本配置-开发者ID)
         	openid = store.get("openid"), // 使用store.js，查看(https://github.com/amenrun/store.js)
-        	code = getUrlParam("code"), // 用于判断用户是否开始授权，授权时回调url都会带上code字段
-            state = getUrlParam("state"), // 用于区分静默授权还是授权登录状态，配置回调url时加以区分
+        	code = getUrlParam("code"), // 用于判断用户是否授权
+            state = getUrlParam("state"), // 用于区分静默授权还是授权登录状态，在配置回调url时加以区分
             pageURL = getClearURL(); // 回调页(拿到页面干净的url地址，不包括code等字段)
     
         window.$userLogin = function(call) {
