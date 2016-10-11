@@ -1,8 +1,8 @@
-# 微信公众平台网页开发
+# 微信公众号开发
 
 ## [网页授权机制](article/webtoken.md)
 
-## [公众号开发](article/weclient.md)
+## [公众平台开发](article/weclient.md)
 
 ## [JSSDK初始化与调用](article/jssdk.md)
 
@@ -20,14 +20,14 @@
 	    DataManipulation.php
 	    WebToken.php // 处理网页授权的类
 	    ApiAccess_token.php // 获取全局接口调用唯一凭证access_token的类
-	    JSSDK_config.php // 处理config参数包的类
+	    JSSDK_config.php // 处理JSSDK初始化config参数包的类
 	script-
 	  userLogin.js
 	  wxJSSDK.js
     
-    heyQ.php->服务器端保存公众平台的开发者应用ID和秘钥
+    heyQ.php->服务器端保存公众号的开发者应用ID和秘钥
     <?php exit();?>
-    {"appId":"微信公众平台的应用ID","appSecret":"微信公众平台的应用秘钥"}
+    {"appId":"应用ID","appSecret":"应用秘钥"}
     
     api_access_token.php->服务器端缓存access_token
     <?php exit();?>

@@ -1,22 +1,5 @@
 # 部署微信jssdk开发环境
 
-> 项目文件结构
-
-	api-
-	 wx_get_access_token.php
-	 wx_get_jsapi_ticket.php
-	 cache-
-	  access_token.txt
-	  access_tokenTime.txt
-	  jsapi_ticket.txt
-	  jsapi_ticketTime.txt
-	script-
-	 zepto.min.js
-	 sha1.js
-	 wxJSSDK.js
-
-[zepto.min.js获取地址](http://zeptojs.com/)
-
 1. index.html
 
 	```html
