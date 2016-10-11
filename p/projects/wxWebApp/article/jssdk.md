@@ -1,4 +1,9 @@
-# 部署微信jssdk开发环境
+# JSSDK初始化与调用
+
+[请参考微信公众平台开发者文档](https://mp.weixin.qq.com/wiki/11/74ad127cc054f6b80759c40f77ec03db.html)
+[demo体验](http://demo.open.weixin.qq.com/jssdk)
+
+## 第一步 了解JSSDK
 
 1. index.html
 
@@ -215,108 +220,4 @@
 	}
 
 	?>
-	```
-
-5. sha1.js
-
-	```javascript
-	/*
-	 * create by amen2020 in April 24, 2016
-	 * 程序目的：
-	 *  1.用于前端js签名算法
-	 */
-
-	var sha1 = {
-	  hexcase: 0, // hex output format. 0 - lowercase; 1 - uppercase 
-	  chrsz: 8, // bits per input character. 8 - ASCII; 16 - Unicode 
-	  hex_sha1: function(s) {
-	    var that = this;
-	    return this.binb2hex(that.core_sha1(that.str2binb(s), s.length * chrsz));
-	  },
-	  binb2hex: function(binarray) { // Convert an array of big-endian words to a hex string
-	    var str,
-	        hex_tab = hexcase ? "0123456789ABCDEF" : "0123456789abcdef";
-	    for(var i = 0; i < binarray.length * 4; i++){
-	      str += hex_tab.charAt((binarray[i>>2] >> ((3 - i%4)*8+4)) & 0xF) +
-	          hex_tab.charAt((binarray[i>>2] >> ((3 - i%4)*8  )) & 0xF);
-	    }
-	    return str;
-	  },
-	  core_sha1: function(x, len) { // Calculate the SHA-1 of an array of big-endian words, and a bit length
-	    var w = Array(80),
-	        a =  1732584193,
-	        b = -271733879,
-	        c = -1732584194,
-	        d =  271733878,
-	        e = -1009589776;
-
-	    // append padding
-	    x[len >> 5] |= 0x80 << (24 - len % 32);
-	    x[((len + 64 >> 9) << 4) + 15] = len;
-
-	    for(var i = 0; i < x.length; i += 16){
-	      var olda = a,
-	          oldb = b,
-	          oldc = c,
-	          oldd = d,
-	          olde = e,
-	          t = safe_add(safe_add(rol(a, 5), sha1_ft(j, b, c, d)),
-	          safe_add(safe_add(e, w[j]), sha1_kt(j)));
-
-	      for(var j = 0; j < 80; j++){
-	        if(j < 16) {
-	          w[j] = x[i + j];
-	        }else{
-	          w[j] = rol(w[j-3] ^ w[j-8] ^ w[j-14] ^ w[j-16], 1);
-	        }
-	        e = d;
-	        d = c;
-	        c = rol(b, 30);
-	        b = a;
-	        a = t;
-	      }
-
-	      a = safe_add(a, olda);
-	      b = safe_add(b, oldb);
-	      c = safe_add(c, oldc);
-	      d = safe_add(d, oldd);
-	      e = safe_add(e, olde);
-	    }
-	    return Array(a, b, c, d, e);
-	  },
-	  // Bitwise rotate a 32-bit number to the left
-	  rol: function(num, cnt) {
-	    return (num << cnt) | (num >>> (32 - cnt));
-	  },
-	  // Add integers, wrapping at 2^32. This uses 16-bit operations internally to work around bugs in some JS interpreters
-	  safe_add: function(x, y) {
-	    var lsw = (x & 0xFFFF) + (y & 0xFFFF),
-	        msw = (x >> 16) + (y >> 16) + (lsw >> 16);
-	    return (msw << 16) | (lsw & 0xFFFF);
-	  },
-	  // Perform the appropriate triplet combination function for the current iteration
-	  sha1_ft: function(t, b, c, d) {
-	    if(t < 20) {
-	      return (b & c) | ((~b) & d);
-	    }else if(t < 40) {
-	      return b ^ c ^ d;
-	    }else if(t < 60) {
-	      return (b & c) | (b & d) | (c & d);
-	    }
-	    return b ^ c ^ d;
-	  },
-	  // Determine the appropriate additive constant for the current iteration
-	  sha1_kt: function(t) {
-	    return (t < 20) ?  1518500249 : (t < 40) ?  1859775393 : (t < 60) ? -1894007588 : -899497514;
-	  },
-	  // Convert an 8-bit or 16-bit string to an array of big-endian words In 8-bit function, characters >255 have their hi-byte silently ignored.
-	  str2binb: function(str) {
-	    var bin = Array();
-	    var mask = (1 << chrsz) - 1;
-	    for(var i = 0; i < str.length * chrsz; i += chrsz) {
-	      bin[i>>5] |= (str.charCodeAt(i / chrsz) & mask) << (32 - chrsz - i%32);
-	    }
-	    return bin;
-	  }
-	};
 	```
