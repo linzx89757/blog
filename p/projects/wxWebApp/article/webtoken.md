@@ -1,6 +1,6 @@
 # 网页授权机制
 
-[请参考微信公众平台开发者文档](https://mp.weixin.qq.com/wiki/4/9ac2e7b1f1d22e9e57260f6553822520.html)
+[请参考微信公众平台开发者文档](https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140842&token=&lang=zh_CN)
 
 ## 第一步 了解openid和unionid
 
@@ -79,7 +79,6 @@
             return json_decode($res);
         }
     }
-    
     ?>
     ```
 
@@ -107,7 +106,6 @@
     }else if($state === "scopeUserinfo") {
         echo $webToken->getUserInfo();
     }
-    
     ?>
     ```
 
