@@ -13,6 +13,8 @@
 
 ## [JSSDK初始化与调用](article/jssdk.md)
 
+## [本地调试](article/jssdk.md)
+
 > 项目文件结构  
 > *服务器环境为php环境*
 
