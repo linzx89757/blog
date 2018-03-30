@@ -1,4 +1,4 @@
-# [林志鑫的博客](https://amenrun.github.io/blog/)
+# [林志鑫的博客](https://linzx89757.github.io/blog/)
 > amen2020出品
 
 - [微信网页开发](projects/wxWebApp/index.md)
